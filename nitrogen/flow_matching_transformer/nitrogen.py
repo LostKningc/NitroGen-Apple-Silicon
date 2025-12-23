@@ -9,7 +9,7 @@ import torch.nn.functional as F
 from einops import rearrange
 from torch import nn
 from torch.distributions import Beta
-from transformers import SiglipVisionModel, AutoModel
+from transformers import SiglipVisionModel, AutoModel, AutoConfig
 
 from .modules import DiT, DiTConfig, SelfAttentionTransformer, SelfAttentionTransformerConfig
 
@@ -182,7 +182,16 @@ class NitroGen(torch.nn.Module):
         self.vision_hidden_size = config.vision_hidden_size
 
         if "siglip" in config.vision_encoder_name:
-            model = SiglipVisionModel.from_pretrained(config.vision_encoder_name)
+            print(f"Loading vision encoder from: {config.vision_encoder_name}")
+            vision_cfg_loaded = AutoConfig.from_pretrained(config.vision_encoder_name)
+        
+            # 如果加载到的是完整的 SiglipConfig（包含 vision_config），则提取 vision_config
+            if hasattr(vision_cfg_loaded, "vision_config"):
+                print("Detected composite SiglipConfig, extracting vision_config...")
+                vision_cfg_loaded = vision_cfg_loaded.vision_config
+            
+            # 使用提取后的配置加载模型
+            model = SiglipVisionModel.from_pretrained(config.vision_encoder_name, config=vision_cfg_loaded)
             self.vision_encoder = model.vision_model
             self.vision_encoder_type = "siglip"
         else:

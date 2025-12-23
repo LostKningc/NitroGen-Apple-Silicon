@@ -76,7 +76,7 @@ def load_model(checkpoint_path: str):
     model.load_state_dict(checkpoint["model"])
     model.eval()
     tokenizer.eval()
-    model.to("cuda")
+    model.to("mps")
 
     return model, tokenizer, img_proc, ckpt_config, game_mapping, action_downsample_ratio
 
@@ -229,9 +229,9 @@ class InferenceSession:
 
         available_frames = len(self.obs_buffer)
         frames = torch.zeros((self.max_buffer_size, *pixel_values.shape[1:]), 
-                            dtype=pixel_values.dtype, device="cuda")
+                            dtype=pixel_values.dtype, device="mps")
         frames[-available_frames:] = pixel_values
-        dropped_frames = torch.zeros((self.max_buffer_size,), dtype=torch.bool, device="cuda")
+        dropped_frames = torch.zeros((self.max_buffer_size,), dtype=torch.bool, device="mps")
         dropped_frames[:self.max_buffer_size - available_frames] = True
         
         data_with_history = {
@@ -241,7 +241,7 @@ class InferenceSession:
         }
         tokenized_data_with_history = self.tokenizer.encode(data_with_history)
         
-        frame_mask = torch.ones((self.max_buffer_size,), dtype=torch.bool, device="cuda")
+        frame_mask = torch.ones((self.max_buffer_size,), dtype=torch.bool, device="mps")
         frame_mask[-1] = False
         data_without_history = {
             "frames": frames,
@@ -250,18 +250,18 @@ class InferenceSession:
         }
         tokenized_data_without_history = self.tokenizer.encode(data_without_history)
         
-        # Convert to CUDA tensors with batch dimension
+        # Convert to mps tensors with batch dimension
         for tokenized_data in [tokenized_data_with_history, tokenized_data_without_history]:
             for k, v in tokenized_data.items():
                 if isinstance(v, torch.Tensor):
-                    tokenized_data[k] = v.unsqueeze(0).to("cuda")
+                    tokenized_data[k] = v.unsqueeze(0).to("mps")
                 elif isinstance(v, np.ndarray):
-                    tokenized_data[k] = torch.tensor(v, device="cuda").unsqueeze(0)
+                    tokenized_data[k] = torch.tensor(v, device="mps").unsqueeze(0)
                 else:
                     tokenized_data[k] = [v]
         
         with torch.inference_mode():
-            with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
+            with torch.autocast(device_type="mps", dtype=torch.bfloat16):
                 if self.cfg_scale == 1.0:
                     model_output = self.model.get_action(tokenized_data_with_history, 
                                                         old_layout=self.old_layout)

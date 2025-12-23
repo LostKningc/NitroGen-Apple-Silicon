@@ -9,6 +9,9 @@
   </p>
 </div>
 
+# NitroGen for macOS (Apple Silicon)
+
+This repository is a fork of the original NitroGen, modified to support Apple Silicon chips.
 
 # NitroGen
 
@@ -20,14 +23,14 @@ NitroGen is trained through behavior cloning on the largest video-action gamepla
 
 ## Prerequisites
 
-We **do not distribute game environments**, you must use your own copies of the games. This repository only supports running the agent on **Windows games**. You can serve the model from a Linux machine for inference, but the game ultimately has to run on Windows. We have tested on Windows 11 with Python ≥ 3.12.
+We **do not distribute game environments**, you must use your own copies of the games. This repository only supports running the agent on **Windows games**. You can serve the model from a MacOS machine for inference, but the game ultimately has to run on Windows. We have tested on Windows 11 with Python ≥ 3.12.
 
 ## Setup
 
 Install this repo:
 ```bash
-git clone https://github.com/MineDojo/NitroGen.git
-cd NitroGen
+git clone https://github.com/LostKningc/NitroGen-Apple-Silicon.git
+cd NitroGen-Apple-Silicon
 pip install -e .
 ```
 
