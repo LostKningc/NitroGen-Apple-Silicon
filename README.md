@@ -5,7 +5,7 @@
     <a href="https://nitrogen.minedojo.org/"><strong>Website</strong></a> | 
     <a href="https://huggingface.co/nvidia/NitroGen"><strong>Model</strong></a> |
     <a href="https://huggingface.co/datasets/nvidia/NitroGen"><strong>Dataset</strong></a> |
-    <a href="https://nitrogen.minedojo.org/assets/documents/nitrogen.pdf"><strong>Paper</strong></a>
+    <a href="https://arxiv.org/abs/2601.02427"><strong>Paper</strong></a>
   </p>
 </div>
 
@@ -15,9 +15,11 @@ This repository is a fork of the original NitroGen, modified to support Apple Si
 
 # NitroGen
 
-NitroGen is an open foundation model for generalist gaming agents. This multi-game model takes pixel input and predicts gamepad actions.
+NitroGen is an open foundation model for generalist gaming agents. This multi-game model takes pixel input and predicts gamepad actions. It is trained through behavior cloning on the largest video-action gameplay dataset, assembled exclusively from internet videos. It can be adapted via post-training to unseen games.
 
-NitroGen is trained through behavior cloning on the largest video-action gameplay dataset, assembled exclusively from internet videos. It can be adapted via post-training to unseen games.
+> [!IMPORTANT]
+> NitroGen is a research project to enable training generalist agent from internet data, please refer to the [paper](https://arxiv.org/abs/2601.02427) for full details. The current model is a 500M parameter DiT that can only see the last frame. Therefore it has no ability yet to plan over long horizons, play games end-to-end, self improve over time, or play completely unseen game. It is a fast-reacting system-1 sensory model
+
 
 # Installation
 
@@ -53,17 +55,20 @@ python scripts/play.py --process '<game_executable_name>.exe'
 
 The `--process` parameter must be the exact executable name of the game you want to play. You can find it by right-clicking on the game process in Windows Task Manager (Ctrl+Shift+Esc), and selecting `Properties`. The process name should be in the `General` tab and end with `.exe`.
 
-<!-- TODO # Paper and Citation
+# Paper and Citation
 
 If you find our work useful, please consider citing us!
 
 ```bibtex
-@article{,
-  title   = {},
-  author  = {},
-  year    = {},
-  journal = {}
+@misc{magne2026nitrogen,
+      title={NitroGen: An Open Foundation Model for Generalist Gaming Agents}, 
+      author={Loïc Magne and Anas Awadalla and Guanzhi Wang and Yinzhen Xu and Joshua Belofsky and Fengyuan Hu and Joohwan Kim and Ludwig Schmidt and Georgia Gkioxari and Jan Kautz and Yisong Yue and Yejin Choi and Yuke Zhu and Linxi "Jim" Fan},
+      year={2026},
+      eprint={2601.02427},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2601.02427}, 
 }
-``` -->
+```
 
 **Disclaimer**: This project is strictly for research purposes and is not an official NVIDIA product.
